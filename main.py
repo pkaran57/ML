@@ -5,7 +5,7 @@
 import logging
 
 from sample.MNISTSample import MNISTSample
-from domain.PerceptronLearningAlgo import PerceptronLearningAlgo
+from algo.perceptron.PerceptronLearningAlgo import PerceptronLearningAlgo
 
 logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.INFO)
 logger = logging.getLogger("MAIN")

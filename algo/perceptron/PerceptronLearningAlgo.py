@@ -8,7 +8,7 @@ import logging
 import matplotlib.pyplot as plt
 
 from collections import Counter
-from domain.Perceptron import Perceptron
+from algo.perceptron.Perceptron import Perceptron
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
