@@ -79,7 +79,7 @@ class PerceptronLearningAlgo:
         :param sample: Sample's class to predict
         :return: Prediction of the algorithm for the sample
         """
-        net_inputs = list(map(lambda perceptron: perceptron.get_net_input(perceptron.get_inputs(sample.features)), self.__perceptrons))
+        net_inputs = list(map(lambda perceptron: perceptron.get_net_input(sample), self.__perceptrons))
         perceptron_target_label_with_max_net_input = net_inputs.index(max(net_inputs))
         return perceptron_target_label_with_max_net_input
 
