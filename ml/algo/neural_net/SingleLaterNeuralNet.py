@@ -4,6 +4,8 @@ import random
 
 import numpy as np
 
+from ml.utils.ArrayUtils import convert_to_np_array
+
 
 class SingleLaterNeuralNet:
 
@@ -52,45 +54,37 @@ class SingleLaterNeuralNet:
             self._logger.info('Processed {} samples'.format(samples_processed))
 
     def _calculate_input_to_hidden_delta(self, hidden_error_terms, learning_rate, momentum, sample):
-        input_to_hidden_delta = []
-        for i_num, i in enumerate(hidden_error_terms):
-            delta = []
-            for j_num, j in enumerate(sample.inputs):
-                delta.append((learning_rate * i * j) + (
-                            momentum * self._input_to_hidden_weights_delta_from_previous_itr[i_num, j_num]))
-            input_to_hidden_delta.append(delta)
-        return np.array(input_to_hidden_delta, dtype=np.double)
+        momentum_matrix = self._input_to_hidden_weights_delta_from_previous_itr * momentum
+        error_times_learning_rate = hidden_error_terms * learning_rate
+
+        return (sample.inputs[np.newaxis] * error_times_learning_rate[np.newaxis].T) + momentum_matrix
 
     @staticmethod
     def _calculate_hidden_to_output_delta(hidden_activations, learning_rate, momentum, output_error_terms, hidden_to_output_weights_delta_from_previous_itr):
-        hidden_to_output_delta = []
-        for i_num, i in enumerate(output_error_terms):
-            delta = []
-            learning_rate_i = learning_rate * i
-            for j_num, j in enumerate([1.0] + hidden_activations):
-                delta.append((learning_rate_i * j) + (
-                        momentum * hidden_to_output_weights_delta_from_previous_itr[i_num, j_num]))
-            hidden_to_output_delta.append(delta)
-        return np.array(hidden_to_output_delta, dtype=np.double)
+        momentum_matrix = hidden_to_output_weights_delta_from_previous_itr * momentum
+        hidden_activations_with_bias = np.insert(hidden_activations, 0, 1)
+        error_times_learning_rate = output_error_terms * learning_rate
+
+        return (hidden_activations_with_bias[np.newaxis] * error_times_learning_rate[np.newaxis].T) + momentum_matrix
 
     @staticmethod
     def get_output_error_terms(output_activations, sample):
         output_error_terms = [
             activation * (1 - activation) * ((0.9 if act_num == sample.true_class_label else 0.1) - activation) for
             act_num, activation in enumerate(output_activations)]
-        return output_error_terms
+        return convert_to_np_array(output_error_terms)
 
     def _get_output_activations(self, hidden_activations):
         output_activations = list(map(SingleLaterNeuralNet.sigmoid_activation_function,
-                                      np.dot(self._hidden_to_output_weights, [1.0] + hidden_activations)))
+                                      np.dot(self._hidden_to_output_weights, np.insert(hidden_activations, 0, 1))))
         assert len(output_activations) == self._num_target_labels, 'Unexpected output activation array size'
-        return output_activations
+        return convert_to_np_array(output_activations)
 
     def _get_hidden_activations(self, sample):
         hidden_activations = list(map(SingleLaterNeuralNet.sigmoid_activation_function,
                                       np.dot(self._input_to_hidden_weights, sample.inputs)))
         assert len(hidden_activations) == self._num_hidden_units, 'Unexpected hidden activation array size'
-        return hidden_activations
+        return convert_to_np_array(hidden_activations)
 
     def _get_hidden_error_terms(self, hidden_activations, output_error_terms):
         hidden_error_terms = []
@@ -98,7 +92,7 @@ class SingleLaterNeuralNet:
             error_term = hidden_activation * (1 - hidden_activation) * (
                 np.dot(output_error_terms, self._hidden_to_output_weights[:, num + 1]))
             hidden_error_terms.append(error_term)
-        return hidden_error_terms
+        return np.array(hidden_error_terms, dtype=np.double)
 
     @staticmethod
     def sigmoid_activation_function(net_input):

@@ -12,8 +12,8 @@ logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.
 logger = logging.getLogger("MAIN")
 
 # load training and validation samples
-training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
-validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
+training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
+validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
 
 
 def neural_net():

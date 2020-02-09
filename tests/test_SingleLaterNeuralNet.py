@@ -39,7 +39,7 @@ class TestSingleLaterNeuralNet(TestCase):
         learning_rate = .1
         momentum = .9
         hidden_activations = [.45, .55]
-        output_error_terms = [.095, -.12]
+        output_error_terms = np.array([.095, -.12], dtype=np.double)
 
         hidden_to_output_weights_delta_from_previous_itr = np.zeros(shape=(2,3))
 
@@ -59,7 +59,7 @@ class TestSingleLaterNeuralNet(TestCase):
         learning_rate = .1
         momentum = 1
         hidden_activations = [.45, .55]
-        output_error_terms = [.095, -.12]
+        output_error_terms = np.array([.095, -.12], dtype=np.double)
 
         hidden_to_output_weights_delta_from_previous_itr = np.array([[.007, .2, -.1], [0, 0, 1]], dtype=np.float)
 
