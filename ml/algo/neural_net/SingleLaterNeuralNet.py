@@ -39,7 +39,7 @@ class SingleLaterNeuralNet:
             output_error_terms = self.get_output_error_terms(output_activations, sample)
             hidden_error_terms = self._get_hidden_error_terms(hidden_activations, output_error_terms)
 
-            hidden_to_output_delta = self._calculate_hidden_to_output_delta(hidden_activations, learning_rate, momentum, output_error_terms)
+            hidden_to_output_delta = self._calculate_hidden_to_output_delta(hidden_activations, learning_rate, momentum, output_error_terms, self._hidden_to_output_weights_delta_from_previous_itr)
             self._hidden_to_output_weights = self._hidden_to_output_weights + hidden_to_output_delta
 
             input_to_hidden_delta = self._calculate_input_to_hidden_delta(hidden_error_terms, learning_rate, momentum, sample)
@@ -61,13 +61,15 @@ class SingleLaterNeuralNet:
             input_to_hidden_delta.append(delta)
         return np.array(input_to_hidden_delta, dtype=np.double)
 
-    def _calculate_hidden_to_output_delta(self, hidden_activations, learning_rate, momentum, output_error_terms):
+    @staticmethod
+    def _calculate_hidden_to_output_delta(hidden_activations, learning_rate, momentum, output_error_terms, hidden_to_output_weights_delta_from_previous_itr):
         hidden_to_output_delta = []
         for i_num, i in enumerate(output_error_terms):
             delta = []
+            learning_rate_i = learning_rate * i
             for j_num, j in enumerate([1.0] + hidden_activations):
-                delta.append((learning_rate * i * j) + (
-                            momentum * self._hidden_to_output_weights_delta_from_previous_itr[i_num, j_num]))
+                delta.append((learning_rate_i * j) + (
+                        momentum * hidden_to_output_weights_delta_from_previous_itr[i_num, j_num]))
             hidden_to_output_delta.append(delta)
         return np.array(hidden_to_output_delta, dtype=np.double)
 
