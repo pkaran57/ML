@@ -35,7 +35,7 @@ class TestSingleLaterNeuralNet(TestCase):
         for actual, expected in zip(input_to_hidden_weights[1], [-.20006, .39994, -.1]):
             assert math.isclose(actual, expected, abs_tol=abs_tol)
 
-    def test__calculate_hidden_to_output_delta(self):
+    def test__calculate_hidden_to_output_delta_zero_delta(self):
         learning_rate = .1
         momentum = .9
         hidden_activations = [.45, .55]
@@ -53,4 +53,24 @@ class TestSingleLaterNeuralNet(TestCase):
             assert math.isclose(actual, expected, abs_tol=abs_tol)
 
         for actual, expected in zip(hidden_to_output_delta[1], [-.012, -.0054, -.0066]):
+            assert math.isclose(actual, expected, abs_tol=abs_tol)
+
+    def test__calculate_hidden_to_output_delta_non_zero_delta(self):
+        learning_rate = .1
+        momentum = 1
+        hidden_activations = [.45, .55]
+        output_error_terms = [.095, -.12]
+
+        hidden_to_output_weights_delta_from_previous_itr = np.array([[.007, .2, -.1], [0, 0, 1]], dtype=np.float)
+
+        hidden_to_output_delta = SingleLaterNeuralNet._calculate_hidden_to_output_delta(hidden_activations, learning_rate, momentum, output_error_terms, hidden_to_output_weights_delta_from_previous_itr)
+
+        assert hidden_to_output_delta.shape == (2,3)
+
+        abs_tol = 0.001
+
+        for actual, expected in zip(hidden_to_output_delta[0], [0.017, .204, -0.095]):
+            assert math.isclose(actual, expected, abs_tol=abs_tol)
+
+        for actual, expected in zip(hidden_to_output_delta[1], [-.012, -.0054, 0.9934]):
             assert math.isclose(actual, expected, abs_tol=abs_tol)
