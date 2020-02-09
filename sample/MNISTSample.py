@@ -25,7 +25,7 @@ class MNISTSample:
         self.inputs = inputs
 
     def __str__(self):
-        return "Sample #{} : true class label = {}, inputs = {}".format(self.sample_number, self.true_class_label,
+        return "MNISTSample sample #{} : true class label = {}, inputs = {}".format(self.sample_number, self.true_class_label,
                                                                         self.inputs)
 
     def get_features(self):

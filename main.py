@@ -3,11 +3,10 @@
 # Runtime used - Python 3.7
 
 import logging
-import numpy as np
 
 from algo.neural_net.SingleLaterNeuralNet import SingleLaterNeuralNet
-from sample.MNISTSample import MNISTSample
 from algo.perceptron.PerceptronLearningAlgo import PerceptronLearningAlgo
+from sample.MNISTSample import MNISTSample
 
 logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.INFO)
 logger = logging.getLogger("MAIN")
