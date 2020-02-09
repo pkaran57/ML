@@ -7,22 +7,22 @@ import numpy as np
 
 class SingleLaterNeuralNet:
 
-    def __init__(self, num_hidden_units, training_samples, validation_samples, num_target_labels):
+    def __init__(self, num_hidden_units, training_samples, validation_samples, num_target_labels, **kwargs):
         self.__num_hidden_units = num_hidden_units
         self.__training_samples = training_samples
         self.__validation_samples = validation_samples
         self.__num_target_labels = num_target_labels
 
-        self.__input_to_hidden_weights = SingleLaterNeuralNet.initialize_weight_matrix(
-            shape=(num_hidden_units, training_samples[0].inputs.size))  # 50 * 785 . 785 * 1 = 50 * 1
+        self.__input_to_hidden_weights = kwargs.get('input_to_hidden_weights',
+                                                    SingleLaterNeuralNet.initialize_weight_matrix(shape=(num_hidden_units, training_samples[0].inputs.size)))
 
-        self.__hidden_to_output_weights = SingleLaterNeuralNet.initialize_weight_matrix(
-            shape=(num_target_labels, num_hidden_units + 1))  # 10 * 51 *
+        self.__hidden_to_output_weights = kwargs.get('hidden_to_output_weights',
+                                                     SingleLaterNeuralNet.initialize_weight_matrix(shape=(num_target_labels, num_hidden_units + 1)))
 
         self.__input_to_hidden_weights_delta_from_previous_itr = self.get_zero_matrix(self.__input_to_hidden_weights.shape)
         self.__hidden_to_output_weights_delta_from_previous_itr = self.get_zero_matrix(self.__hidden_to_output_weights.shape)
 
-        self.__logger = logging.getLogger('NeuralNet')
+        self.__logger = logging.getLogger('NeuralNet:')
 
     def train(self, num_of_epochs, learning_rate=0.1, momentum=0):
         for _ in range(num_of_epochs):
