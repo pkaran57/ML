@@ -25,10 +25,10 @@ class TestSingleLaterNeuralNet(TestCase):
         assert input_to_hidden_weights.shape == (2, 3)
         assert hidden_to_output_weights.shape == (2, 3)
 
-        assert math.isclose(input_to_hidden_weights[0][0], -.4002, abs_tol=0.0001)
-        assert math.isclose(input_to_hidden_weights[0][1], .1998, abs_tol=0.001)
-        assert math.isclose(input_to_hidden_weights[0][2], .1, abs_tol=0.0001)
+        abs_tol = 0.0001
 
-        assert math.isclose(input_to_hidden_weights[1][0], -.20006, abs_tol=0.0001)
-        assert math.isclose(input_to_hidden_weights[1][1], .39994, abs_tol=0.001)
-        assert math.isclose(input_to_hidden_weights[1][2], -.1, abs_tol=0.0001)
+        for actual, expected in zip(input_to_hidden_weights[0], [-.4002, .1998, .1]):
+            assert math.isclose(actual, expected, abs_tol=abs_tol)
+
+        for actual, expected in zip(input_to_hidden_weights[1], [-.20006, .39994, -.1]):
+            assert math.isclose(actual, expected, abs_tol=abs_tol)
