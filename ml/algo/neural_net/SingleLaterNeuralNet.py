@@ -24,15 +24,45 @@ class SingleLaterNeuralNet:
         self._input_to_hidden_weights_delta_from_previous_itr = self.get_zero_matrix(self._input_to_hidden_weights.shape)
         self._hidden_to_output_weights_delta_from_previous_itr = self.get_zero_matrix(self._hidden_to_output_weights.shape)
 
+        self._training_accuracies_per_epoch = []
+        self._validation_accuracies_per_epoch = []
+
         self._logger = logging.getLogger('NeuralNet:')
 
     def train(self, num_of_epochs, learning_rate=0.1, momentum=0):
-        for _ in range(num_of_epochs):
-            self._logger.info('Starting epoch #{}'.format(_))
+        self.compute_accuracy(0)
+
+        for epoch_num in range(1, num_of_epochs + 1):
+            self._logger.info('Starting training for epoch #{}'.format(epoch_num))
             self._train_for_an_epoch(learning_rate, momentum)
 
+            self.compute_accuracy(epoch_num)
+
+    def compute_accuracy(self, epoch_num):
+        for samples in self._training_samples, self._validation_samples:
+            correct_predictions = 0
+            total_num_predictions = len(samples)
+
+            for sample in samples:
+
+                hidden_activations = self._get_hidden_activations(sample)
+                output_activations = self._get_output_activations(hidden_activations)
+
+                if output_activations.argmax() == sample.true_class_label:
+                    correct_predictions += 1
+
+            accuracy = (correct_predictions / total_num_predictions) * 100
+
+            is_validation_sample = True if samples is self._validation_samples else False
+
+            if is_validation_sample:
+                self._validation_accuracies_per_epoch.append(accuracy)
+            else:
+                self._training_accuracies_per_epoch.append(accuracy)
+
+            self._logger.info("For epoch #{}, accuracy for {} dataset = {}".format(epoch_num, 'validation samples' if is_validation_sample else 'training samples', accuracy))
+
     def _train_for_an_epoch(self, learning_rate=0.1, momentum=0):
-        samples_processed = 0
         for sample in self._training_samples:
 
             hidden_activations = self._get_hidden_activations(sample)
@@ -49,9 +79,6 @@ class SingleLaterNeuralNet:
 
             self._hidden_to_output_weights_delta_from_previous_itr = hidden_to_output_delta
             self._input_to_hidden_weights_delta_from_previous_itr = input_to_hidden_delta
-
-            samples_processed += 1
-            self._logger.info('Processed {} samples'.format(samples_processed))
 
     def _calculate_input_to_hidden_delta(self, hidden_error_terms, learning_rate, momentum, sample):
         momentum_matrix = self._input_to_hidden_weights_delta_from_previous_itr * momentum
