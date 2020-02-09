@@ -2,8 +2,8 @@ import math
 
 import numpy as np
 
-from algo.neural_net.SingleLaterNeuralNet import SingleLaterNeuralNet
-from sample.TestSample import TestSample
+from ml.algo.neural_net.SingleLaterNeuralNet import SingleLaterNeuralNet
+from ml.sample.TestSample import TestSample
 
 
 def test_neural_net():

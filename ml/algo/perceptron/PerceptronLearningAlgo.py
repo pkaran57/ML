@@ -5,11 +5,12 @@ Class that represents an instance of a Perceptron Learning algorithm
 """
 
 import logging
-import matplotlib.pyplot as plt
-
 from collections import Counter
-from algo.perceptron.Perceptron import Perceptron
+
+import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+from ml.algo.perceptron.Perceptron import Perceptron
 
 
 class PerceptronLearningAlgo:
