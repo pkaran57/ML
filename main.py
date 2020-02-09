@@ -31,4 +31,4 @@ def perceptron():
         perceptron_learning_algo.train_and_compute_accuracy()
 
 
-perceptron()
+neural_net()
