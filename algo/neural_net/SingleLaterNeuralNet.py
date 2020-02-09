@@ -1,3 +1,4 @@
+import logging
 import math
 import random
 
@@ -21,7 +22,15 @@ class SingleLaterNeuralNet:
         self.__input_to_hidden_weights_delta_from_previous_itr = self.get_zero_matrix(self.__input_to_hidden_weights.shape)
         self.__hidden_to_output_weights_delta_from_previous_itr = self.get_zero_matrix(self.__hidden_to_output_weights.shape)
 
-    def train(self, learning_rate=0.1, momentum=0.1):
+        self.__logger = logging.getLogger('NeuralNet')
+
+    def train(self, num_of_epochs, learning_rate=0.1, momentum=0):
+        for _ in range(num_of_epochs):
+            self.__logger.info('Starting epoch #{}'.format(_))
+            self.__train_for_an_epoch(learning_rate, momentum)
+
+    def __train_for_an_epoch(self, learning_rate=0.1, momentum=0):
+        samples_processed = 0
         for sample in self.__training_samples:
 
             hidden_activations = self.get_hidden_activations(sample)
@@ -38,6 +47,9 @@ class SingleLaterNeuralNet:
 
             self.__hidden_to_output_weights_delta_from_previous_itr = hidden_to_output_delta
             self.__input_to_hidden_weights_delta_from_previous_itr = input_to_hidden_delta
+
+            samples_processed += 1
+            self.__logger.info('Processed {} samples'.format(samples_processed))
 
     def calculate_input_to_hidden_delta(self, hidden_error_terms, learning_rate, momentum, sample):
         input_to_hidden_delta = []

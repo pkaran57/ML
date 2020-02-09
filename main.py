@@ -13,11 +13,11 @@ logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.
 logger = logging.getLogger("MAIN")
 
 # load training and validation samples
-training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_debug.csv')
+training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
 validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_debug.csv')
 
 single_layer_neural_net = SingleLaterNeuralNet(50, training_samples, validation_samples, 10)
-single_layer_neural_net.train()
+single_layer_neural_net.train(num_of_epochs=1)
 
 
 def perceptron():
