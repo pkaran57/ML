@@ -4,6 +4,7 @@ import random
 
 import numpy as np
 
+from ml.utils import ReportUtils, PlotUtils
 from ml.utils.ArrayUtils import convert_to_np_array
 
 
@@ -24,12 +25,13 @@ class SingleLaterNeuralNet:
         self._input_to_hidden_weights_delta_from_previous_itr = self.get_zero_matrix(self._input_to_hidden_weights.shape)
         self._hidden_to_output_weights_delta_from_previous_itr = self.get_zero_matrix(self._hidden_to_output_weights.shape)
 
-        self._training_accuracies_per_epoch = []
-        self._validation_accuracies_per_epoch = []
+        self._training_accuracies_over_epoch = []
+        self._validation_accuracies_over_epoch = []
 
-        self._logger = logging.getLogger('NeuralNet:')
+        self._logger = logging.getLogger('NeuralNet')
 
     def train(self, num_of_epochs, learning_rate=0.1, momentum=0):
+        title_attributes = {'η': learning_rate, 'α': momentum, '# of hidden units': self._num_hidden_units, '# of training samples': len(self._training_samples)}
         self.compute_accuracy(0)
 
         for epoch_num in range(1, num_of_epochs + 1):
@@ -38,29 +40,24 @@ class SingleLaterNeuralNet:
 
             self.compute_accuracy(epoch_num)
 
+        PlotUtils.plot_accuracy(self._training_accuracies_over_epoch, self._validation_accuracies_over_epoch, title_attributes)
+        PlotUtils.plot_confusion_matrix(self._validation_samples, self.get_prediction, title_attributes)
+
     def compute_accuracy(self, epoch_num):
         for samples in self._training_samples, self._validation_samples:
-            correct_predictions = 0
-            total_num_predictions = len(samples)
-
-            for sample in samples:
-
-                hidden_activations = self._get_hidden_activations(sample)
-                output_activations = self._get_output_activations(hidden_activations)
-
-                if output_activations.argmax() == sample.true_class_label:
-                    correct_predictions += 1
-
-            accuracy = (correct_predictions / total_num_predictions) * 100
-
             is_validation_sample = True if samples is self._validation_samples else False
+            accuracy = ReportUtils.compute_accuracy(samples, self.is_prediction_correct)
 
-            if is_validation_sample:
-                self._validation_accuracies_per_epoch.append(accuracy)
-            else:
-                self._training_accuracies_per_epoch.append(accuracy)
-
+            self._validation_accuracies_over_epoch.append(accuracy) if is_validation_sample else self._training_accuracies_over_epoch.append(accuracy)
             self._logger.info("For epoch #{}, accuracy for {} dataset = {}".format(epoch_num, 'validation samples' if is_validation_sample else 'training samples', accuracy))
+
+    def is_prediction_correct(self, sample):
+        return self.get_prediction(sample) == sample.true_class_label
+
+    def get_prediction(self, sample):
+        hidden_activations = self._get_hidden_activations(sample)
+        output_activations = self._get_output_activations(hidden_activations)
+        return output_activations.argmax()
 
     def _train_for_an_epoch(self, learning_rate=0.1, momentum=0):
         for sample in self._training_samples:

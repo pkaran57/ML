@@ -17,8 +17,9 @@ validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mni
 
 
 def neural_net():
-    single_layer_neural_net = SingleLaterNeuralNet(50, training_samples, validation_samples, 10)
-    single_layer_neural_net.train(num_of_epochs=50)
+    for num_hidden_units in 20, 50, 100:
+        single_layer_neural_net = SingleLaterNeuralNet(num_hidden_units, training_samples, validation_samples, 10)
+        single_layer_neural_net.train(num_of_epochs=50, learning_rate=0.1, momentum=0.0)
 
 
 def perceptron():
