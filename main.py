@@ -22,9 +22,9 @@ def neural_net():
     learning_rate = 0.1
 
     # exp 1
-    # for num_hidden_units in 20, 50, 100:
-    #     single_layer_neural_net = SingleLaterNeuralNet(num_hidden_units, training_samples, validation_samples, num_target_labels)
-    #     single_layer_neural_net.train(num_of_epochs=50, learning_rate=learning_rate, momentum=0.0)
+    for num_hidden_units in 20, 50, 100:
+        single_layer_neural_net = SingleLaterNeuralNet(num_hidden_units, training_samples, validation_samples, num_target_labels)
+        single_layer_neural_net.train(num_of_epochs=50, learning_rate=learning_rate, momentum=0.0)
 
     # exp 2
     training_samples_by_target_labels = get_training_samples_by_target_labels(training_samples)
