@@ -1,6 +1,4 @@
 """
-Name - Karan Patel, PSU ID - 965051876
-
 Class that represents a sample from the MNIST dataset
 """
 
@@ -12,6 +10,9 @@ import numpy as np
 
 
 class MNISTSample:
+    """
+    Class to help represent a sample in the MNIST dataset
+    """
     logger = logging.getLogger('MINSTSample')
     expected_inputs = 785
 

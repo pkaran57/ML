@@ -1,11 +1,10 @@
 """
-Name - Karan Patel, PSU ID - 965051876
-
 Class that represents a Perceptron
 """
 
 import logging
 import random
+
 import numpy as np
 
 

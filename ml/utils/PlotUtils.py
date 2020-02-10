@@ -4,6 +4,13 @@ from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 img_counter = 0
 
 def plot_accuracy(training_accuracy_over_epochs, validation_accuracy_over_epochs, plot_title_attributes):
+    """
+    Plot accuracies over epochs for training and validation samples
+    :param training_accuracy_over_epochs:
+    :param validation_accuracy_over_epochs:
+    :param plot_title_attributes:
+    :return:
+    """
     title = "Accuracy over Epochs\n"
     for key, value in plot_title_attributes.items():
         title += '{}={}, '.format(key, value)
@@ -25,6 +32,14 @@ def plot_accuracy(training_accuracy_over_epochs, validation_accuracy_over_epochs
 
 
 def plot_confusion_matrix(validation_samples, get_prediction_label_function, plot_title_attributes, display_labels=range(10)):
+    """
+    Plot confusion matrix
+    :param validation_samples:
+    :param get_prediction_label_function:
+    :param plot_title_attributes:
+    :param display_labels:
+    :return:
+    """
     predicted_labels = []
     actual_labels = []
 

@@ -1,6 +1,4 @@
 """
-Name - Karan Patel, PSU ID - 965051876
-
 Class that represents an instance of a Perceptron Learning algorithm
 """
 

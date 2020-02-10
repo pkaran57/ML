@@ -1,4 +1,7 @@
 class TestSample:
+    """
+    Class to help create test samples for testing
+    """
 
     def __init__(self, sample_number, true_class_label, inputs):
         self.sample_number = sample_number

@@ -9,8 +9,20 @@ from ml.utils.ArrayUtils import convert_to_np_array
 
 
 class SingleLaterNeuralNet:
+    """
+    Neural net with a single hidden layer
+    """
 
     def __init__(self, num_hidden_units, training_samples, validation_samples, num_target_labels, **kwargs):
+        """
+
+        :param num_hidden_units: number of hidden units to create in the hidden later
+        :param training_samples:
+        :param validation_samples:
+        :param num_target_labels: total number of truth labels
+        :param kwargs: Additional options to override weight creation process. Use 'input_to_hidden_weights' and 'hidden_to_output_weights' to provide desired weights.
+                       If not provided, random small weights will be used to initialize both weight matrices.
+        """
         self._num_hidden_units = num_hidden_units
         self._training_samples = training_samples
         self._validation_samples = validation_samples
@@ -31,6 +43,14 @@ class SingleLaterNeuralNet:
         self._logger = logging.getLogger('NeuralNet')
 
     def train(self, num_of_epochs, learning_rate=0.1, momentum=0):
+        """
+        Train neural net with training samples. Compute training as well as validation accuracies before training as well as after each epoch during training.
+        Accuracy over epochs and a confusion matrix against the validation dataset will be generated during the training.
+        :param num_of_epochs:
+        :param learning_rate:
+        :param momentum:
+        :return:
+        """
         title_attributes = {'η': learning_rate, 'α': momentum, '# of hidden units': self._num_hidden_units, '# of training samples': len(self._training_samples)}
         self.compute_accuracy(0)
 
@@ -46,6 +66,11 @@ class SingleLaterNeuralNet:
         PlotUtils.plot_confusion_matrix(self._validation_samples, self.get_prediction, title_attributes)
 
     def compute_accuracy(self, epoch_num):
+        """
+        Compute accuracy against training and  validation samples
+        :param epoch_num: Only used for logging
+        :return:
+        """
         for samples in self._training_samples, self._validation_samples:
             is_validation_sample = True if samples is self._validation_samples else False
             accuracy = ReportUtils.compute_accuracy(samples, self.is_prediction_correct)
@@ -57,6 +82,10 @@ class SingleLaterNeuralNet:
         return self.get_prediction(sample) == sample.true_class_label
 
     def get_prediction(self, sample):
+        """
+        :param sample: sample's class label to predict
+        :return: predicted class label for sample
+        """
         hidden_activations = self._get_hidden_activations(sample)
         output_activations = self._get_output_activations(hidden_activations)
         return output_activations.argmax()
