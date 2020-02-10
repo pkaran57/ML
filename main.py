@@ -1,5 +1,5 @@
 # Name - Karan Patel, PSU ID - 965051876
-# Instructions - Entry point for running the Perceptron learning algorithm. Install all the necessary requirements specified in the 'requirements.txt' file by running 'pip install -r requirements.txt'
+# Instructions - Entry point for running the algorithm. Install all the necessary requirements specified in the 'requirements.txt' file by running 'pip install -r requirements.txt'
 # Runtime used - Python 3.7
 
 import logging
