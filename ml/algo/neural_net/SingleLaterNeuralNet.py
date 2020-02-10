@@ -41,6 +41,8 @@ class SingleLaterNeuralNet:
             self.compute_accuracy(epoch_num)
 
         PlotUtils.plot_accuracy(self._training_accuracies_over_epoch, self._validation_accuracies_over_epoch, title_attributes)
+        # line below plots accuracy without
+        PlotUtils.plot_accuracy(self._training_accuracies_over_epoch[1:], self._validation_accuracies_over_epoch[1:], title_attributes)
         PlotUtils.plot_confusion_matrix(self._validation_samples, self.get_prediction, title_attributes)
 
     def compute_accuracy(self, epoch_num):

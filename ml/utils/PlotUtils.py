@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from sklearn.metrics import ConfusionMatrixDisplay, confusion_matrix
 
+img_counter = 0
 
 def plot_accuracy(training_accuracy_over_epochs, validation_accuracy_over_epochs, plot_title_attributes):
-
     title = "Accuracy over Epochs\n"
     for key, value in plot_title_attributes.items():
         title += '{}={}, '.format(key, value)
@@ -15,6 +15,10 @@ def plot_accuracy(training_accuracy_over_epochs, validation_accuracy_over_epochs
 
     plt.plot(training_accuracy_over_epochs, label='Training Accuracy')
     plt.plot(validation_accuracy_over_epochs, label='Validation Accuracy')
+
+    global img_counter
+    plt.savefig('out/{}-accuracy.svg'.format(img_counter), format='svg', dpi=1200)
+    img_counter += 1
 
     plt.legend()
     plt.show()
@@ -38,6 +42,10 @@ def plot_confusion_matrix(validation_samples, get_prediction_label_function, plo
 
     for key, value in plot_title_attributes.items():
         title += '{}={}, '.format(key, value)
+
+    global img_counter
+    plt.savefig('out/{}-confusion-matrix.svg'.format(img_counter), format='svg', dpi=1200)
+    img_counter += 1
 
     plt.title(title)
     plt.show()
