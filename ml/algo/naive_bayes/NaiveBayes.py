@@ -1,5 +1,6 @@
 import math
 import re
+from collections import Counter
 
 import numpy as np
 
@@ -38,9 +39,27 @@ def calculate_gaussian(features):
     return np.mean(features), 0.01 if std < 0.01 else std
 
 
-calculate_probability_density = lambda feature, mean, std: (1 / (math.sqrt(2 * math.pi) * std)) * math.exp(-0.5 * (((feature - mean) / std) ** 2))
+calculate_probability_density = lambda feature, mean, std: (1 / (math.sqrt(2 * math.pi) * std)) * math.exp(
+    -0.5 * (((feature - mean) / std) ** 2))
 
 safe_math_log = lambda num: num if num == 0 else math.log(num)
+
+
+def get_highest_probability(probability_densities):
+    most_probable_label = None
+    highest_density = -99999999999999
+
+    for label, density in probability_densities.items():
+        if density >= highest_density:
+            most_probable_label = label
+            highest_density = density
+
+    return most_probable_label, highest_density
+
+
+def compute_class_probabilities(test_samples):
+    return Counter([true_class_label for true_class_label, feature in test_samples])
+
 
 def naive_bayes(training_file, test_file):
     training_samples_by_label = get_training_samples_by_label(training_file)
@@ -51,29 +70,29 @@ def naive_bayes(training_file, test_file):
 
     for label, features in training_samples_by_label.items():
         for i in range(len(features[0])):
-            mean, std = calculate_gaussian(training_samples_by_label[label][:,i])
+            mean, std = calculate_gaussian(training_samples_by_label[label][:, i])
             means[label].append(mean)
             stds[label].append(std)
 
     accurate_predictions = 0
     total_predictions = len(test_samples)
 
+    class_probabilities = compute_class_probabilities(test_samples)
+    total_num_test_samples = len(test_samples)
+
     for true_class_label, features in test_samples:
         probability_densities = dict()
         for class_label in sorted(list(training_samples_by_label.keys())):
-            probability_density = 0
+            probability_density = math.log(class_probabilities[class_label] / total_num_test_samples)
             for feature, mean, std in zip(features, means[class_label], stds[class_label]):
                 probability_density += safe_math_log(calculate_probability_density(feature, mean, std))
             probability_densities[class_label] = probability_density
 
-        probability_densities_arr = convert_to_numpy_array(list(probability_densities.values()))        # fix this
-        ind = np.argmax(probability_densities_arr)
-        if ind + 1 == int(true_class_label):
+        label, density = get_highest_probability(probability_densities)
+        if label == true_class_label:
             accurate_predictions += 1
 
-    print(accurate_predictions / total_predictions)
-
-
+    print((accurate_predictions / total_predictions) * 100)
 
 
 naive_bayes(training_file, test_file)
