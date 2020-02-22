@@ -101,14 +101,15 @@ def naive_bayes(training_file, test_file):
     means = {label: [] for label in training_samples_by_label.keys()}
     stds = {label: [] for label in training_samples_by_label.keys()}
 
-    for predicted_label in sorted(list(training_samples_by_label.keys()), key=str_to_int_converter):
-        total_num_of_features = len(training_samples_by_label[predicted_label][0])
+    # for each class label, compute mean and standard deviation for each dimension/feature
+    for label in sorted(list(training_samples_by_label.keys()), key=str_to_int_converter):
+        total_num_of_features = len(training_samples_by_label[label][0])
         for i in range(total_num_of_features):
-            mean, std = calculate_gaussian(training_samples_by_label[predicted_label][:, i])
-            means[predicted_label].append(mean)
-            stds[predicted_label].append(std)
+            mean, std = calculate_gaussian(training_samples_by_label[label][:, i])
+            means[label].append(mean)
+            stds[label].append(std)
 
-            print("Class {0:d}, attribute {1:d}, mean = {2:.2f}, std = {3:.2f}".format(int(predicted_label), i + 1, mean, std))
+            print("Class {0:d}, attribute {1:d}, mean = {2:.2f}, std = {3:.2f}".format(int(label), i + 1, mean, std))
 
     # --- Classification phase ---
 
@@ -118,6 +119,7 @@ def naive_bayes(training_file, test_file):
     accuracy = 0
     total_predictions = len(test_samples)
 
+    # predict each test sample
     for sample_count, (true_class_label, features) in enumerate(test_samples):
         probability_densities = dict()
         for class_label in sorted(list(training_samples_by_label.keys())):
