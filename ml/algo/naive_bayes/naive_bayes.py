@@ -2,12 +2,10 @@
 
 import math
 import re
+import sys
 from collections import Counter
 
 import numpy as np
-
-training_file = 'C:\K.E.R Projects\ml\data\yeast_training.txt'
-test_file = 'C:\K.E.R Projects\ml\data\yeast_test.txt'
 
 # Useful Lambdas
 
@@ -96,10 +94,9 @@ def naive_bayes(training_file, test_file):
     Top level function
     """
 
-    # Training phase
+    # --- Training phase ---
 
     training_samples_by_label = get_training_samples_by_label(training_file)
-    test_samples = get_test_samples(test_file)
 
     means = {label: [] for label in training_samples_by_label.keys()}
     stds = {label: [] for label in training_samples_by_label.keys()}
@@ -113,12 +110,13 @@ def naive_bayes(training_file, test_file):
 
             print("Class {0:d}, attribute {1:d}, mean = {2:.2f}, std = {3:.2f}".format(int(predicted_label), i + 1, mean, std))
 
-    # Classification phase
+    # --- Classification phase ---
+
+    test_samples = get_test_samples(test_file)
+    class_probabilities = get_class_probabilities(test_samples)
 
     accuracy = 0
     total_predictions = len(test_samples)
-
-    class_probabilities = get_class_probabilities(test_samples)
 
     for sample_count, (true_class_label, features) in enumerate(test_samples):
         probability_densities = dict()
@@ -131,10 +129,13 @@ def naive_bayes(training_file, test_file):
         predicted_label, probability, accuracy_for_sample = get_prediction_and_accuracy(probability_densities, true_class_label)
         accuracy += accuracy_for_sample
 
-
         print("ID={0:5d}, predicted={1:3d}, probability = {2:.4f}, true={3:3d}, accuracy={4:4.2f}\n".format(sample_count + 1, int(predicted_label), probability, int(true_class_label), accuracy_for_sample))
 
     print("classification accuracy={0:6.4f}".format((accuracy / total_predictions) * 100))
 
+# training_file = 'C:\K.E.R Projects\ml\data\yeast_training.txt'
+# test_file = 'C:\K.E.R Projects\ml\data\yeast_test.txt'
 
-naive_bayes(training_file, test_file)
+# naive_bayes(training_file, test_file)
+
+naive_bayes(sys.argv[1], sys.argv[2])
