@@ -2,7 +2,6 @@
 
 import math
 import re
-import sys
 from collections import Counter
 
 import numpy as np
@@ -134,10 +133,3 @@ def naive_bayes(training_file, test_file):
         print("ID={0:5d}, predicted={1:3d}, probability = {2:.4f}, true={3:3d}, accuracy={4:4.2f}\n".format(sample_count + 1, int(predicted_label), probability, int(true_class_label), accuracy_for_sample))
 
     print("classification accuracy={0:6.4f}".format((accuracy / total_predictions) * 100))
-
-# training_file = 'C:\K.E.R Projects\ml\data\yeast_training.txt'
-# test_file = 'C:\K.E.R Projects\ml\data\yeast_test.txt'
-
-# naive_bayes(training_file, test_file)
-
-naive_bayes(sys.argv[1], sys.argv[2])

@@ -4,20 +4,21 @@
 
 import logging
 
+from ml.algo.k_means.KMeans import KMeans
+from ml.algo.naive_bayes.naive_bayes import naive_bayes
 from ml.algo.neural_net.SingleLaterNeuralNet import SingleLaterNeuralNet
 from ml.algo.perceptron.PerceptronLearningAlgo import PerceptronLearningAlgo
 from ml.sample.MNISTSample import MNISTSample
+from ml.sample.OptDigitSample import OptDigitSample
 from ml.utils.SampleUtils import get_fraction_of_equally_distributed_samples, get_training_samples_by_target_labels
 
 logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.INFO)
 logger = logging.getLogger("MAIN")
 
-# load training and validation samples
-training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
-validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
+def neural_net_main():
+    training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
+    validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
 
-
-def neural_net():
     num_target_labels = 10
     learning_rate = 0.1
 
@@ -43,7 +44,10 @@ def neural_net():
         single_layer_neural_net.train(num_of_epochs=50, learning_rate=learning_rate, momentum=momentum)
 
 
-def perceptron():
+def perceptron_main():
+    training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
+    validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
+
     num_of_epochs = 2
     true_class_labels_in_dataset = set(range(10))
     # For each learning rate, execute the Perceptron learning algorithm and determining accuracy after each epoch and accuracy matrix at the end
@@ -52,5 +56,17 @@ def perceptron():
                                                           validation_samples, true_class_labels_in_dataset)
         perceptron_learning_algo.train_and_compute_accuracy()
 
+def naive_bayes_main():
+    training_file = 'C:\K.E.R Projects\ml\data\yeast_training.txt'
+    test_file = 'C:\K.E.R Projects\ml\data\yeast_test.txt'
 
-neural_net()
+    naive_bayes(training_file, test_file)
+
+def k_means():
+    training_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.train')
+    test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.test')
+
+    k_means_algo = KMeans(training_samples, test_samples)
+    k_means_algo.find_clusters(10)
+
+k_means()
