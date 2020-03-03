@@ -67,6 +67,6 @@ def k_means():
     test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.test')
 
     k_means_algo = KMeans(training_samples, test_samples)
-    k_means_algo.find_clusters(10, 50)
+    k_means_algo.find_clusters(num_clusters=10)
 
 k_means()
