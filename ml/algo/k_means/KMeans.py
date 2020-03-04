@@ -60,10 +60,10 @@ class KMeans:
     def mean_square_separation(clusters):
         mss = 0
 
-        for main_cluster in clusters:
-            for cluster in clusters:
-                if main_cluster != cluster:
-                    mss += (main_cluster.find_distance_from_centroid(cluster.centroid) ** 2)
+        for i in range(len(clusters)):
+            for j in range(i):
+                if i != j:
+                    mss += (clusters[i].find_distance_from_centroid(clusters[j].centroid) ** 2)
 
         return mss / ((len(clusters) * (len(clusters) - 1)) / 2)
 
@@ -100,9 +100,9 @@ class KMeans:
         confusion_matrix_display = ConfusionMatrixDisplay(validation_samples_confusion_matrix, range(10))
         confusion_matrix_display.plot(values_format='d')
 
-        title = "Confusion matrix\n"
-        plt.savefig('out/confusion-matrix.svg', format='svg', dpi=1200)
-        plt.title(title)
+        plt.title('Confusion matrix')
+
+        plt.savefig('out/confusion-matrix.png', format='png', dpi=1200)
         plt.show()
 
         accuracy = (correct_predictions / len(self._validation_samples)) * 100
@@ -110,8 +110,11 @@ class KMeans:
 
     @staticmethod
     def print_centroid(clusters):
-        for cluster in clusters:
+        for num, cluster in enumerate(clusters):
             plt.imshow(cluster.centroid.reshape(8,8), cmap='Greys')
+
             common_label = cluster.most_common_label()
-            plt.title('No samples in cluster' if common_label is None else 'Class label for this cluster = {}'.format(common_label))
+            plt.title('No samples in cluster' if common_label is None else 'Samples with the most common class label in this cluster = {}'.format(common_label))
+
+            plt.savefig('out/{}-centroid-visual.png'.format(num), format='png', dpi=1200)
             plt.show()

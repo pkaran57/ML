@@ -84,7 +84,7 @@ def k_means():
     cluster_set = runs[smallest_mse]
 
     print('Average mean square error = ', KMeans.mean_square_error(cluster_set))
-    print('Mean square seperation = ', KMeans.mean_square_separation(cluster_set))
+    print('Mean square separation = ', KMeans.mean_square_separation(cluster_set))
     print('Mean entropy = ', k_means_algo.mean_entropy(cluster_set))
 
     k_means_algo.compute_accuracy(cluster_set)
