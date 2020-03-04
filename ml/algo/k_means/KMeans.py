@@ -1,6 +1,8 @@
 import math
 
+import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 from ml.algo.k_means.Cluster import Cluster
 
@@ -37,7 +39,10 @@ class KMeans:
 
         print('Average mean square error = ', sum(map(Cluster.mean_square_error, clusters)) / len(clusters))
         print('Mean square seperation = ', self.mean_square_separation(clusters))
+        print('Mean entropy = ', self.mean_entropy(clusters))
 
+        self.compute_accuracy(clusters)
+        self.print_centroid(clusters)
 
     def group_samples_by_clusters(self, clusters, samples):
         """
@@ -51,6 +56,8 @@ class KMeans:
             distance_cluster_map = {cluster.find_distance_from_centroid(sample.features):cluster for cluster in clusters}
             cluster_for_sample = distance_cluster_map[min(distance_cluster_map.keys())]
             samples_by_clusters[cluster_for_sample].append(sample)
+
+        assert len(self._training_samples) == sum(map(len, samples_by_clusters.values())), 'Expected total number of training samples to match the sum of samples in all clusters'
         return samples_by_clusters
 
     def mean_square_separation(self, clusters):
@@ -63,6 +70,49 @@ class KMeans:
 
         return mss / ((len(clusters) * (len(clusters) - 1)) / 2)
 
-    def mean_entropy(self):
-        ...
+    def mean_entropy(self, clusters):
+        num_training_samples = len(self._training_samples)
 
+        mean_entropy_value = 0
+
+        for cluster in clusters:
+            mean_entropy_value += ((len(cluster.samples_in_cluster) / num_training_samples) * cluster.entropy())
+
+        return mean_entropy_value
+
+    def compute_accuracy(self, clusters):
+        predicted_labels = []
+        actual_labels = []
+        correct_predictions = 0
+
+        for validation_sample in self._validation_samples:
+            distance_cluster_map = {cluster.find_distance_from_centroid(validation_sample.features):cluster for cluster in clusters}
+            cluster_for_sample = distance_cluster_map[min(distance_cluster_map.keys())]
+
+            predicted_label = cluster_for_sample.most_common_label()
+            actual_label = validation_sample.true_class_label
+
+            if predicted_label == actual_label:
+                correct_predictions += 1
+
+            predicted_labels.append(predicted_label)
+            actual_labels.append(actual_label)
+
+        validation_samples_confusion_matrix = confusion_matrix(y_true=actual_labels, y_pred=predicted_labels)
+
+        confusion_matrix_display = ConfusionMatrixDisplay(validation_samples_confusion_matrix, range(10))
+        confusion_matrix_display.plot(values_format='d')
+
+        title = "Confusion matrix\n"
+        plt.savefig('out/confusion-matrix.svg', format='svg', dpi=1200)
+        plt.title(title)
+        plt.show()
+
+        accuracy = (correct_predictions / len(self._validation_samples)) * 100
+        print('Accuracy = {}%'.format(accuracy))
+
+    def print_centroid(self, clusters):
+        for cluster in clusters:
+            plt.imshow(cluster.centroid.reshape(8,8), cmap='Greys')
+            plt.title(cluster.most_common_label())
+            plt.show()
