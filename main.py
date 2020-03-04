@@ -67,7 +67,7 @@ def naive_bayes_main():
     naive_bayes(training_file, test_file)
 
 
-def k_means():
+def k_means(num_clusters=10):
     training_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.train')
     test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.test')
 
@@ -75,7 +75,7 @@ def k_means():
     runs = dict()
 
     for run_num in range(5):
-        mse, clusters = k_means_algo.find_clusters(num_clusters=10)
+        mse, clusters = k_means_algo.find_clusters(num_clusters)
         print("Mean square for run #{} = {}".format(run_num + 1, mse))
         runs[mse] = clusters
 
