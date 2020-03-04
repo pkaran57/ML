@@ -15,6 +15,7 @@ from ml.utils.SampleUtils import get_fraction_of_equally_distributed_samples, ge
 logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.INFO)
 logger = logging.getLogger("MAIN")
 
+
 def neural_net_main():
     training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
     validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
@@ -24,7 +25,8 @@ def neural_net_main():
 
     # exp 1
     for num_hidden_units in 20, 50, 100:
-        single_layer_neural_net = SingleLaterNeuralNet(num_hidden_units, training_samples, validation_samples, num_target_labels)
+        single_layer_neural_net = SingleLaterNeuralNet(num_hidden_units, training_samples, validation_samples,
+                                                       num_target_labels)
         single_layer_neural_net.train(num_of_epochs=50, learning_rate=learning_rate, momentum=0.0)
 
     # exp 2
@@ -35,7 +37,8 @@ def neural_net_main():
                                                                               training_sample_fraction,
                                                                               training_samples_by_target_labels)
 
-        single_layer_neural_net = SingleLaterNeuralNet(100, training_samples_subset, validation_samples, num_target_labels)
+        single_layer_neural_net = SingleLaterNeuralNet(100, training_samples_subset, validation_samples,
+                                                       num_target_labels)
         single_layer_neural_net.train(num_of_epochs=50, learning_rate=learning_rate, momentum=0.0)
 
     # exp 3
@@ -56,17 +59,36 @@ def perceptron_main():
                                                           validation_samples, true_class_labels_in_dataset)
         perceptron_learning_algo.train_and_compute_accuracy()
 
+
 def naive_bayes_main():
     training_file = 'C:\K.E.R Projects\ml\data\yeast_training.txt'
     test_file = 'C:\K.E.R Projects\ml\data\yeast_test.txt'
 
     naive_bayes(training_file, test_file)
 
+
 def k_means():
     training_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.train')
     test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.test')
 
     k_means_algo = KMeans(training_samples, test_samples)
-    k_means_algo.find_clusters(num_clusters=10)
+    runs = dict()
+
+    for run_num in range(5):
+        mse, clusters = k_means_algo.find_clusters(num_clusters=10)
+        print("Mean square for run #{} = {}".format(run_num + 1, mse))
+        runs[mse] = clusters
+
+    smallest_mse = min(runs.keys())
+    print("Using cluster with the following smallest mse - {}".format(smallest_mse))
+    cluster_set = runs[smallest_mse]
+
+    print('Average mean square error = ', KMeans.mean_square_error(cluster_set))
+    print('Mean square seperation = ', KMeans.mean_square_separation(cluster_set))
+    print('Mean entropy = ', k_means_algo.mean_entropy(cluster_set))
+
+    k_means_algo.compute_accuracy(cluster_set)
+    k_means_algo.print_centroid(cluster_set)
+
 
 k_means()

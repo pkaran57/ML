@@ -1,15 +1,12 @@
 import math
 
 import matplotlib.pyplot as plt
-import numpy as np
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 from ml.algo.k_means.Cluster import Cluster
 
 
 class KMeans:
-
-    find_euclidean_distance = lambda point_a, point_b: np.linalg.norm(point_a - point_b)
 
     def __init__(self, training_samples, validation_samples):
         self._training_samples = training_samples
@@ -37,12 +34,11 @@ class KMeans:
 
             iter_num += 1
 
-        print('Average mean square error = ', sum(map(Cluster.mean_square_error, clusters)) / len(clusters))
-        print('Mean square seperation = ', self.mean_square_separation(clusters))
-        print('Mean entropy = ', self.mean_entropy(clusters))
+        return self.mean_square_error(clusters), clusters
 
-        self.compute_accuracy(clusters)
-        self.print_centroid(clusters)
+    @staticmethod
+    def mean_square_error(clusters):
+        return sum(map(Cluster.mean_square_error, clusters)) / len(clusters)
 
     def group_samples_by_clusters(self, clusters, samples):
         """
@@ -60,7 +56,8 @@ class KMeans:
         assert len(self._training_samples) == sum(map(len, samples_by_clusters.values())), 'Expected total number of training samples to match the sum of samples in all clusters'
         return samples_by_clusters
 
-    def mean_square_separation(self, clusters):
+    @staticmethod
+    def mean_square_separation(clusters):
         mss = 0
 
         for main_cluster in clusters:
@@ -111,8 +108,10 @@ class KMeans:
         accuracy = (correct_predictions / len(self._validation_samples)) * 100
         print('Accuracy = {}%'.format(accuracy))
 
-    def print_centroid(self, clusters):
+    @staticmethod
+    def print_centroid(clusters):
         for cluster in clusters:
             plt.imshow(cluster.centroid.reshape(8,8), cmap='Greys')
-            plt.title(cluster.most_common_label())
+            common_label = cluster.most_common_label()
+            plt.title('No samples in cluster' if common_label is None else 'Class label for this cluster = {}'.format(common_label))
             plt.show()
