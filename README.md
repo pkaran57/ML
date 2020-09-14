@@ -32,4 +32,4 @@ This repository contains implementation for various Machine Learning models. Fol
 
 ### Installing Dependencies
 * Using `pip` - Install all the necessary requirements specified in the `requirements.txt` file by running `pip install -r requirements.txt`
-* Using `pipenv` - Install all the necessary requirements specified in the `Pipfile` file by running `pipenv sync`
+* Using `pipenv` [__preferred__] - Install all the necessary requirements specified in the `Pipfile` file by running `pipenv sync`
