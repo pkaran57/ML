@@ -67,7 +67,7 @@ def naive_bayes_main():
     naive_bayes(training_file, test_file)
 
 
-def k_means(num_clusters=10):
+def k_means_main(num_clusters=10):
     training_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.train')
     test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.test')
 
@@ -91,4 +91,4 @@ def k_means(num_clusters=10):
     k_means_algo.print_centroid(cluster_set)
 
 
-k_means()
+k_means_main()
