@@ -50,7 +50,7 @@ def plot_confusion_matrix(validation_samples, get_prediction_label_function, plo
 
     training_samples_confusion_matrix = confusion_matrix(y_true=actual_labels, y_pred=predicted_labels)
 
-    confusion_matrix_display = ConfusionMatrixDisplay(training_samples_confusion_matrix, display_labels)
+    confusion_matrix_display = ConfusionMatrixDisplay(training_samples_confusion_matrix, display_labels=display_labels)
     confusion_matrix_display.plot(values_format='d')
 
     title = "Confusion matrix\n"

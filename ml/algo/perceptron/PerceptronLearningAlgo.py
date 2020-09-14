@@ -115,7 +115,7 @@ class PerceptronLearningAlgo:
                     expected_count,
                     actual_count)
 
-        confusion_matrix_display = ConfusionMatrixDisplay(training_samples_confusion_matrix, range(10))
+        confusion_matrix_display = ConfusionMatrixDisplay(training_samples_confusion_matrix, display_labels=range(10))
         confusion_matrix_display.plot(values_format='d')
         plt.title("Confusion matrix for learning rate = {}".format(self.__learning_rate))
         plt.show()

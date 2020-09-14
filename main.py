@@ -1,9 +1,7 @@
-# Name - Karan Patel, PSU ID - 965051876
-# Instructions - Entry point for running the algorithm. Install all the necessary requirements specified in the 'requirements.txt' file by running 'pip install -r requirements.txt'
-# Runtime used - Python 3.7
-
 import logging
+import os
 
+from definitions import DATA_DIR
 from ml.algo.k_means.KMeans import KMeans
 from ml.algo.naive_bayes.naive_bayes import naive_bayes
 from ml.algo.neural_net.SingleLaterNeuralNet import SingleLaterNeuralNet
@@ -16,7 +14,21 @@ logging.basicConfig(format="'%(asctime)s' %(name)s %(message)s'", level=logging.
 logger = logging.getLogger("MAIN")
 
 
-def neural_net_main():
+def perceptron_main():
+    training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
+    validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
+
+    num_of_epochs = 2
+    true_class_labels_in_dataset = set(range(10))
+    # For each learning rate, execute the Perceptron learning algorithm and determining accuracy after each epoch and
+    # accuracy matrix at the end
+    for learning_rate in 0.1, 0.01, .001:
+        perceptron_learning_algo = PerceptronLearningAlgo(learning_rate, num_of_epochs, training_samples,
+                                                          validation_samples, true_class_labels_in_dataset)
+        perceptron_learning_algo.train_and_compute_accuracy()
+
+
+def single_layer_neural_net_main():
     training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
     validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
 
@@ -47,29 +59,16 @@ def neural_net_main():
         single_layer_neural_net.train(num_of_epochs=50, learning_rate=learning_rate, momentum=momentum)
 
 
-def perceptron_main():
-    training_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_train.csv')
-    validation_samples = MNISTSample.load_and_shuffle_samples_from_dataset('data/mnist_test.csv')
-
-    num_of_epochs = 2
-    true_class_labels_in_dataset = set(range(10))
-    # For each learning rate, execute the Perceptron learning algorithm and determining accuracy after each epoch and accuracy matrix at the end
-    for learning_rate in 0.1, 0.01, .001:
-        perceptron_learning_algo = PerceptronLearningAlgo(learning_rate, num_of_epochs, training_samples,
-                                                          validation_samples, true_class_labels_in_dataset)
-        perceptron_learning_algo.train_and_compute_accuracy()
-
-
 def naive_bayes_main():
-    training_file = 'C:\K.E.R Projects\ml\data\yeast_training.txt'
-    test_file = 'C:\K.E.R Projects\ml\data\yeast_test.txt'
+    training_file = os.path.join(DATA_DIR, 'yeast_training.txt')
+    test_file = os.path.join(DATA_DIR, 'yeast_test.txt')
 
     naive_bayes(training_file, test_file)
 
 
 def k_means_main(num_clusters=10):
-    training_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.train')
-    test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset('data/optdigits/optdigits.test')
+    training_samples = OptDigitSample.load_and_shuffle_samples_from_dataset(os.path.join(DATA_DIR, 'optdigits', 'optdigits.train'))
+    test_samples = OptDigitSample.load_and_shuffle_samples_from_dataset(os.path.join(DATA_DIR, 'optdigits', 'optdigits.test'))
 
     k_means_algo = KMeans(training_samples, test_samples)
     runs = dict()

@@ -97,7 +97,7 @@ class KMeans:
 
         validation_samples_confusion_matrix = confusion_matrix(y_true=actual_labels, y_pred=predicted_labels)
 
-        confusion_matrix_display = ConfusionMatrixDisplay(validation_samples_confusion_matrix, range(10))
+        confusion_matrix_display = ConfusionMatrixDisplay(validation_samples_confusion_matrix, display_labels=range(10))
         confusion_matrix_display.plot(values_format='d')
 
         plt.title('Confusion matrix')
